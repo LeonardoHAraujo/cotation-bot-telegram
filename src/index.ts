@@ -12,6 +12,7 @@ const PRICE_CHECK_INTERVAL = 60000; // 1 minute
 
 const CRYPTO_API_URL = 'https://api.coingecko.com/api/v3/simple/price';
 const AWESOME_API_URL = 'https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL';
+const TELEGRAM_API_URL = 'https://api.telegram.org';
 
 const THRESHOLD = 3; // Alert for changes more than 5%.
 
@@ -22,7 +23,16 @@ interface Prices {
   eur: number;
 }
 
-const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true });
+const bot = new TelegramBot(TELEGRAM_TOKEN, {
+  polling: true,
+  request: {
+    url: TELEGRAM_API_URL,
+    agentOptions: {
+      keepAlive: true,
+      family: 4
+    },
+  }
+});
 let lastPrices: Prices | null = null;
 
 async function fetchPrices(): Promise<Prices> {
@@ -113,13 +123,16 @@ async function monitorPrices() {
 schedule.scheduleJob('0 9 * * *', async (): Promise<void> => dailyReport());
 setInterval(monitorPrices, PRICE_CHECK_INTERVAL);
 
-bot.on('message', (msg) => {
+bot.on('message', async (msg) => {
   if (msg.text?.toLowerCase() === '/start') {
     bot.sendMessage(
-      // msg.chat.id,
-      CHAT_ID,
+      msg.chat.id,
       '🤖 Bot de monitoramento de preços iniciado! Estarei de olho no Bitcoin, Ethereum, Dólar e Euro. 📊'
     );
+  }
+
+  if (msg.text?.toLowerCase() === '/report') {
+    await dailyReport();
   }
 });
 
