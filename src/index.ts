@@ -14,8 +14,6 @@ const CRYPTO_API_URL = 'https://api.coingecko.com/api/v3/simple/price';
 const AWESOME_API_URL = 'https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL';
 const TELEGRAM_API_URL = 'https://api.telegram.org';
 
-const THRESHOLD = 3; // Alert for changes more than 5%.
-
 interface Prices {
   bitcoin: number;
   ethereum: number;
@@ -33,6 +31,7 @@ const bot = new TelegramBot(TELEGRAM_TOKEN, {
     },
   }
 });
+
 let lastPrices: Prices | null = null;
 
 async function fetchPrices(): Promise<Prices> {
@@ -93,22 +92,22 @@ async function monitorPrices() {
     if (lastPrices) {
       const changes: Partial<Prices> = {};
 
-      if (Math.abs(calculateChange(currentPrices.bitcoin, lastPrices.bitcoin)) > THRESHOLD) {
+      if (currentPrices.bitcoin !== lastPrices.bitcoin) {
         changes.bitcoin = calculateChange(currentPrices.bitcoin, lastPrices.bitcoin);
       }
-      if (Math.abs(calculateChange(currentPrices.ethereum, lastPrices.ethereum)) > THRESHOLD) {
+      if (currentPrices.ethereum !== lastPrices.ethereum) {
         changes.ethereum = calculateChange(currentPrices.ethereum, lastPrices.ethereum);
       }
-      if (Math.abs(calculateChange(currentPrices.usd, lastPrices.usd)) > THRESHOLD) {
+      if (currentPrices.usd !== lastPrices.usd) {
         changes.usd = calculateChange(currentPrices.usd, lastPrices.usd);
       }
-      if (Math.abs(calculateChange(currentPrices.eur, lastPrices.eur)) > THRESHOLD) {
+      if (currentPrices.eur !== lastPrices.eur) {
         changes.eur = calculateChange(currentPrices.eur, lastPrices.eur);
       }
 
       if (Object.keys(changes).length > 0) {
         const message = buildAlertMessage(changes);
-        bot.sendMessage(CHAT_ID, `⚠️ Alerta de variação de preços:\n${message}`);
+        bot.sendMessage(CHAT_ID, `⚠️ Alerta de variação de preços:\n\n${message}`);
       }
     }
 
@@ -133,6 +132,13 @@ bot.on('message', async (msg) => {
 
   if (msg.text?.toLowerCase() === '/report') {
     await dailyReport();
+  }
+
+  if (msg.text?.toLowerCase() === '/ping') {
+    bot.sendMessage(
+      msg.chat.id,
+      '🤖 Pong!. 📊'
+    );
   }
 });
 
