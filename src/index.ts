@@ -19,6 +19,10 @@ interface Prices {
   bitcoin: number;
   ethereum: number;
   solana: number;
+  trump: number;
+  binancecoin: number;
+  dogecoin: number;
+  xrp: number;
   usd: number;
   eur: number;
 }
@@ -38,17 +42,21 @@ let lastPrices: Prices | null = null;
 
 async function fetchPrices(): Promise<Prices> {
   const [cryptoResponse, awesomeResponse] = await Promise.all([
-    axios.get(CRYPTO_API_URL, { params: { ids: 'bitcoin,ethereum,solana', vs_currencies: 'brl' } }),
+    axios.get(CRYPTO_API_URL, { params: { ids: 'bitcoin,ethereum,solana,official-trump,ripple,binancecoin,dogecoin', vs_currencies: 'brl' } }),
     axios.get(AWESOME_API_URL),
   ]);
 
   const bitcoin = cryptoResponse.data.bitcoin.brl;
   const ethereum = cryptoResponse.data.ethereum.brl;
   const solana = cryptoResponse.data.solana.brl;
+  const trump = cryptoResponse.data['official-trump'].brl;
+  const binancecoin = cryptoResponse.data.binancecoin.brl;
+  const dogecoin = cryptoResponse.data.dogecoin.brl;
+  const xrp = cryptoResponse.data.ripple.brl;
   const usd = awesomeResponse.data['USDBRL'].ask;
   const eur = awesomeResponse.data['EURBRL'].ask;
 
-  return { bitcoin, ethereum, solana, usd, eur };
+  return { bitcoin, ethereum, solana, trump, binancecoin, dogecoin, xrp, usd, eur };
 }
 
 /**
@@ -64,6 +72,10 @@ function buildAlertMessage(changes: Partial<Prices>): string {
   if (changes.bitcoin) messages.push(`🔸 Bitcoin mudou ${changes.bitcoin.toFixed(2)}%`);
   if (changes.ethereum) messages.push(`🔹 Ethereum mudou ${changes.ethereum.toFixed(2)}%`);
   if (changes.solana) messages.push(`🔹 Solana mudou ${changes.solana.toFixed(2)}%`);
+  if (changes.binancecoin) messages.push(`🔹 BNB mudou ${changes.binancecoin.toFixed(2)}%`);
+  if (changes.trump) messages.push(`🔹 Trump mudou ${changes.trump.toFixed(2)}%`);
+  if (changes.xrp) messages.push(`🔹 XRP mudou ${changes.xrp.toFixed(2)}%`);
+  if (changes.dogecoin) messages.push(`🔹 Dogecoin mudou ${changes.dogecoin.toFixed(2)}%`);
   if (changes.usd) messages.push(`💵 Dólar mudou ${changes.usd.toFixed(2)}%`);
   if (changes.eur) messages.push(`💵 Euro mudou ${changes.eur.toFixed(2)}%`);
   return messages.join('\n');
@@ -74,6 +86,10 @@ function buildReportAlertMessage(prices: Prices): string {
   if (prices.bitcoin) messages.push(`🔸Cotação Bitcoin R$ ${prices.bitcoin.toFixed(2)}`);
   if (prices.ethereum) messages.push(`🔹Cotação Ethereum R$ ${prices.ethereum.toFixed(2)}`);
   if (prices.solana) messages.push(`🔹Cotação Solana R$ ${prices.solana.toFixed(2)}`);
+  if (prices.binancecoin) messages.push(`🔹Cotação Binancecoin R$ ${prices.binancecoin.toFixed(2)}`);
+  if (prices.trump) messages.push(`🔹Cotação Trump R$ ${prices.trump.toFixed(2)}`);
+  if (prices.xrp) messages.push(`🔹Cotação XRP R$ ${prices.xrp.toFixed(2)}`);
+  if (prices.dogecoin) messages.push(`🔹Cotação Dogecoin R$ ${prices.dogecoin.toFixed(2)}`);
   if (prices.usd) messages.push(`💵 Cotação Dólar R$ ${Number(prices.usd).toFixed(2)}`);
   if (prices.eur) messages.push(`💵 Cotação Euro R$ ${Number(prices.eur).toFixed(2)}`);
   return messages.join('\n');
