@@ -142,8 +142,8 @@ async function monitorPrices() {
   }
 }
 
-// Start monitoring.
-schedule.scheduleJob('*/30 * * * *', async (): Promise<void> => reportCotation());
+// Start monitoring. Every day at 9h.
+schedule.scheduleJob('0 9 * * *', async (): Promise<void> => reportCotation());
 setInterval(monitorPrices, PRICE_CHECK_INTERVAL);
 
 bot.on('message', async (msg) => {
