@@ -26,20 +26,20 @@ jobs:
         docker tag ${IMAGE_NAME}:latest ${REGISTRY}/${IMAGE_NAME}:latest
         docker push ${REGISTRY}/${IMAGE_NAME}:latest
 
-  # deploy:
-  #   name: Deploy
-  #   runs-on: ubuntu-latest
-  #   needs: [ build ]
-  #   steps:
-  #   - name: Docker pull and reload
-  #     uses: appleboy/ssh-action@master
-  #     with:
-  #       host: ${{ secrets.HOST }}
-  #       username: root
-  #       key: ${{ secrets.DIGITALOCEAN_DROPLET_SSH_PRIVATE_KEY }}
-  #       script: |
-  #         cd /bot
-  #         docker-compose pull
-  #         docker-compose down
-  #         docker-compose up -d
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [ build ]
+    steps:
+    - name: Docker pull and reload
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: root
+        key: ${{ secrets.DIGITALOCEAN_DROPLET_SSH_PRIVATE_KEY }}
+        script: |
+          cd /bot
+          docker-compose pull
+          docker-compose down
+          docker-compose up -d
 
