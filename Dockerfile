@@ -7,7 +7,7 @@ COPY --chown=node:node package*.json ./
 COPY --chown=node:node . .
 RUN \
   npm install --silent \
-  && npm cache clean --force 
+  && npm cache clean --force
 RUN npm run build
 
 FROM base AS production
@@ -17,6 +17,6 @@ RUN chown -R node:node /app
 COPY --chown=node:node --from=build /app/node_modules ./node_modules
 COPY --chown=node:node --from=build /app/dist ./dist
 COPY --chown=node:node --from=build /app/package*.json ./
-COPY --chown=node:node --from=build /app/.env ./
+# COPY --chown=node:node --from=build /app/.env ./
 USER node
 CMD [ "node", "dist/index.js" ]
