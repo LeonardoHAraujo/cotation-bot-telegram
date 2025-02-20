@@ -5,7 +5,7 @@ O código atual já monitora corretamente tanto aumentos quanto quedas nos preç
 1. A função `calculateChange` retorna:
    - Valores positivos quando o preço aumenta
    - Valores negativos quando o preço diminui
-   
+
    Por exemplo:
    - Se o preço antigo era 100 e o novo é 110, retorna +10%
    - Se o preço antigo era 100 e o novo é 90, retorna -10%
@@ -14,7 +14,7 @@ O código atual já monitora corretamente tanto aumentos quanto quedas nos preç
    ```typescript
    if (Math.abs(calculateChange(currentPrices.bitcoin, lastPrices.bitcoin)) > THRESHOLD)
    ```
-   
+
    - O `Math.abs()` converte números negativos em positivos
    - Então, uma queda de -15% será convertida para 15% e comparada com o THRESHOLD
    - Isso significa que o alerta será disparado tanto para aumentos quanto para quedas que excedam o limite
@@ -23,7 +23,8 @@ O código atual já monitora corretamente tanto aumentos quanto quedas nos preç
    ```typescript
    changes.bitcoin = calculateChange(currentPrices.bitcoin, lastPrices.bitcoin);
    ```
-   
+
    Isso significa que a mensagem de alerta mostrará:
    - Valores positivos para aumentos (ex: +12%)
    - Valores negativos para quedas (ex: -12%)
+
