@@ -39,7 +39,7 @@ jobs:
         key: ${{ secrets.DIGITALOCEAN_DROPLET_SSH_PRIVATE_KEY }}
         script: |
           cd /bot
-          docker-compose pull
-          docker-compose down
-          docker-compose up -d
+          docker compose pull
+          docker compose down
+          docker compose up -d
 
