@@ -39,6 +39,7 @@ jobs:
         key: ${{ secrets.DIGITALOCEAN_DROPLET_SSH_PRIVATE_KEY }}
         script: |
           cd ~/bot
+          docker login -u ${{ secrets.DIGITALOCEAN_API_TOKEN }} -p ${{ secrets.DIGITALOCEAN_API_TOKEN }} registry.digitalocean.com
           docker compose pull
           docker compose down
           docker compose up -d
