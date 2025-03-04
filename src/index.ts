@@ -13,7 +13,7 @@ const PRICE_CHECK_INTERVAL = 60000; // 1 minute
 const CRYPTO_API_URL = 'https://api.coingecko.com/api/v3/simple/price';
 const AWESOME_API_URL = 'https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL';
 const TELEGRAM_API_URL = 'https://api.telegram.org';
-const THRESHOLD = 1;
+const THRESHOLD = 2;
 
 interface Prices {
   bitcoin: number;
