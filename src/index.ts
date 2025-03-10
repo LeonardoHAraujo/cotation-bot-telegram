@@ -15,6 +15,8 @@ const AWESOME_API_URL = 'https://economia.awesomeapi.com.br/json/last/USD-BRL,EU
 const TELEGRAM_API_URL = 'https://api.telegram.org';
 const THRESHOLD = 2;
 
+let isActive = true;
+
 interface Prices {
   bitcoin: number;
   ethereum: number;
@@ -97,6 +99,10 @@ function buildReportAlertMessage(prices: Prices): string {
 
 async function reportCotation() {
   try {
+    if (!isActive) {
+      return;
+    }
+
     const currentPrices = await fetchPrices();
     const message = buildReportAlertMessage(currentPrices);
     bot.sendMessage(CHAT_ID, `📊 Relatório de preços:\n\n${message}`);
@@ -108,6 +114,10 @@ async function reportCotation() {
 
 async function monitorPrices() {
   try {
+    if (!isActive) {
+      return;
+    }
+
     const currentPrices = await fetchPrices();
 
     if (lastPrices) {
@@ -131,7 +141,7 @@ async function monitorPrices() {
 
       if (Object.keys(changes).length > 0) {
         const message = buildAlertMessage(changes);
-        bot.sendMessage(CHAT_ID, `⚠️ Alerta de variação de preços:\n\n${message}`);
+        bot.sendMessage(CHAT_ID, `⚠️  Alerta de variação de preços:\n\n${message}`);
       }
     }
 
@@ -143,15 +153,35 @@ async function monitorPrices() {
 }
 
 // Start monitoring. Every 2 hours.
-// schedule.scheduleJob('0 */2 * * *', async (): Promise<void> => reportCotation());
-// setInterval(monitorPrices, PRICE_CHECK_INTERVAL);
+schedule.scheduleJob('0 */2 * * *', async (): Promise<void> => reportCotation());
+setInterval(monitorPrices, PRICE_CHECK_INTERVAL);
 
 bot.on('message', async (msg) => {
+  if (msg.text?.toLowerCase() === '/active') {
+    bot.sendMessage(CHAT_ID, 'Bot ativado!');
+    isActive = true;
+  }
+
+  if (msg.text?.toLowerCase() === '/deactive') {
+    bot.sendMessage(CHAT_ID, 'Bot desativado!');
+    isActive = false;
+  }
+
   if (msg.text?.toLowerCase() === '/report') {
+    if (!isActive) {
+      bot.sendMessage(CHAT_ID, `⚠️  Bot inativo! Ativar? /active`);
+      return;
+    }
+
     await reportCotation();
   }
 
   if (msg.text?.toLowerCase() === '/ping') {
+    if (!isActive) {
+      bot.sendMessage(CHAT_ID, `⚠️  Bot inativo! Ativar? /active`);
+      return;
+    }
+
     bot.sendMessage(
       msg.chat.id,
       '🤖 Pong!. 📊'
