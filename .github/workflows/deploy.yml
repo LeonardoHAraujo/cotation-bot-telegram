@@ -41,5 +41,6 @@ jobs:
           cd ~/bot
           docker login -u ${{ secrets.DIGITALOCEAN_API_TOKEN }} -p ${{ secrets.DIGITALOCEAN_API_TOKEN }} registry.digitalocean.com
           docker pull ${REGISTRY}/${IMAGE_NAME}:latest
-          docker service update --force bot_cotation_cron
-
+          docker stack rm bot_cotation
+          sleep 5
+          docker stack deploy -c bot-stack.yml bot_cotation
