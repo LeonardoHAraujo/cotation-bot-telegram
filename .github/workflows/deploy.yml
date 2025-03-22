@@ -40,5 +40,6 @@ jobs:
         script: |
           cd ~/bot
           docker login -u ${{ secrets.DIGITALOCEAN_API_TOKEN }} -p ${{ secrets.DIGITALOCEAN_API_TOKEN }} registry.digitalocean.com
+          docker pull ${REGISTRY}/${IMAGE_NAME}:latest
           docker stack deploy -c bot-stack.yml bot_cotation
 
