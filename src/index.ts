@@ -184,7 +184,7 @@ bot.on('message', async (msg) => {
 
     bot.sendMessage(
       msg.chat.id,
-      '🤖 Pong!. 📊'
+      '🤖 Pong (Deu boa)!. 📊'
     );
   }
 });

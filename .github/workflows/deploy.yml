@@ -38,5 +38,4 @@ jobs:
           docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
           sed -i "s|image: .*/.*:.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}|" bot-stack.yml
           cat bot-stack.yml
-          dockcer images
           docker stack deploy -c bot-stack.yml bot_cotation
