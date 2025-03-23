@@ -187,18 +187,6 @@ bot.on('message', async (msg) => {
       '🤖 Pong!. 📊'
     );
   }
-
-  if (msg.text?.toLowerCase() === '/ci') {
-    if (!isActive) {
-      bot.sendMessage(CHAT_ID, `⚠️  Bot inativo! Ativar? /active`);
-      return;
-    }
-
-    bot.sendMessage(
-      msg.chat.id,
-      '🤖 CD!. 📊'
-    );
-  }
 });
 
 console.log('Bot iniciado...');

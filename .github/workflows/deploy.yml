@@ -8,6 +8,7 @@ on:
 env:
   IMAGE_NAME: bot-cotation
   REGISTRY: registry.digitalocean.com/botcotation
+  TAG: ${{ github.run_number }}
 
 jobs:
 
@@ -18,13 +19,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build docker image
-      run: docker build . --file Dockerfile --tag ${IMAGE_NAME}:latest
+      run: docker build . --file Dockerfile --tag ${IMAGE_NAME}:${TAG}
 
     - name: Push docker image
       run: |
         docker login -u ${{ secrets.DIGITALOCEAN_API_TOKEN }} -p ${{ secrets.DIGITALOCEAN_API_TOKEN }} registry.digitalocean.com
-        docker tag ${IMAGE_NAME}:latest ${REGISTRY}/${IMAGE_NAME}:latest
-        docker push ${REGISTRY}/${IMAGE_NAME}:latest
+        docker tag ${IMAGE_NAME}:${TAG} ${REGISTRY}/${IMAGE_NAME}:${TAG}
+        docker push ${REGISTRY}/${IMAGE_NAME}:${TAG}
 
   deploy:
     name: Deploy
@@ -40,7 +41,6 @@ jobs:
         script: |
           cd ~/bot
           docker login -u ${{ secrets.DIGITALOCEAN_API_TOKEN }} -p ${{ secrets.DIGITALOCEAN_API_TOKEN }} registry.digitalocean.com
-          docker pull ${REGISTRY}/${IMAGE_NAME}:latest
-          docker stack rm bot_cotation
-          sleep 5
+          docker pull ${REGISTRY}/${IMAGE_NAME}:${TAG}
+          sed -i "s|^\s*image: .*|image: ${REGISTRY}/${IMAGE_NAME}:${TAG}|g" bot-stack.yml
           docker stack deploy -c bot-stack.yml bot_cotation
