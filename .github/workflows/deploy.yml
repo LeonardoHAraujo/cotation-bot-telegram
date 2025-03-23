@@ -42,5 +42,5 @@ jobs:
           cd ~/bot
           docker login -u ${{ secrets.DIGITALOCEAN_API_TOKEN }} -p ${{ secrets.DIGITALOCEAN_API_TOKEN }} registry.digitalocean.com
           docker pull ${REGISTRY}/${IMAGE_NAME}:${TAG}
-          sed -i "s|^\s*image: .*|image: ${REGISTRY}/${IMAGE_NAME}:${TAG}|g" bot-stack.yml
+          sed -i "s|\(image: .*/.*:\).*|\1${TAG}|g" bot-stack.yml
           docker stack deploy -c bot-stack.yml bot_cotation
