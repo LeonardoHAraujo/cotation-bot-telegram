@@ -35,6 +35,6 @@ jobs:
         script: |
           cd ~/bot
           docker login -u ${{ secrets.DIGITALOCEAN_API_TOKEN }} -p ${{ secrets.DIGITALOCEAN_API_TOKEN }} registry.digitalocean.com
-          sed -i "s|image: .*/.*:.*|image: ${REGISTRY}/${IMAGE_NAME}:${TAG}|" bot-stack.yml
+          sed -i "s|image: .*/.*:.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}|" bot-stack.yml
           cat bot-stack.yml
           docker stack deploy -c bot-stack.yml bot_cotation
