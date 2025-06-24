@@ -154,7 +154,7 @@ async function monitorPrices() {
 
 // Start monitoring. Every 2 hours.
 schedule.scheduleJob('0 */2 * * *', async (): Promise<void> => reportCotation());
-setInterval(monitorPrices, PRICE_CHECK_INTERVAL);
+// setInterval(monitorPrices, PRICE_CHECK_INTERVAL);
 
 bot.on('message', async (msg) => {
   if (msg.text?.toLowerCase() === '/active') {
